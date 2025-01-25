@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceptance Rate</title>
+    <link href="node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <style>
+        /* Styles for colored circles */
+        .green-circle {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background-color: green;
+            border-radius: 50%;
+            margin: 2px;
+        }
+
+        .red-circle {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background-color: red;
+            border-radius: 50%;
+            margin: 2px;
+        }
+
+        /* Classes for left and right alignment */
+        .left {
+            text-align: left; /* Align text to the left */
+            justify-content: flex-start; /* Alignment within the flex container */
+        }
+
+        .right {
+            text-align: right; /* Align text to the right */
+            justify-content: flex-end; /* Alignment within the flex container */
+        }
+
+        /* Flexbox container to stack lists */
+        .board {
+            display: flex;
+            flex-direction: column; /* Stack flex items vertically */
+            align-items: center;    /* Center items in the cross-axis */
+            margin: 20px;          /* Add margin around the board */
+            max-width: 680px;      /* Set a max-width for the centering */
+            margin-left: auto;     /* Automatically adjust left margins for centering */
+            margin-right: auto;    /* Automatically adjust right margins for centering */
+        }
+
+        /* Each UL should be a flex container to maintain items in a row */
+        ul {
+            display: flex;          /* Use flex to display items in a row */
+            padding: 0;            /* Remove default padding */
+            list-style-type: none; /* Remove bullet points */
+            margin: 5px 0;         /* Margin for spacing between ULs */
+            width: 100%;           /* Make the UL span the full width */
+            justify-content: center; /* Center ULs on the page */
+        }
+
+        /* Responsive handling for smaller screens */
+        @media (max-width: 768px) {
+            .board {
+                align-items: stretch; /* Allow full width on smaller screens */
+            }
+            ul {
+                width: 100%; /* Change to full width in small screens */
+            }
+        }
+        .btn-space {
+    margin-right: 10px; /* Adjust the pixel value as needed */
+}
+    </style>
+</head>
+<body>
+    <div class="container mt-5 text-center">
+        <h1>Acceptance Rate Tracker</h1>
+        <div class="row">
+            <div class="col-sm"></div>
+            <div class="col-sm d-flex justify-content-center">
+                <button type="button" class="btn btn-success btn-space" id="Accept">Accept</button>
+                <button type="button" class="btn btn-danger btn-space" id="Decline">Decline</button>
+            </div>
+            <div class="col-sm"></div>
+        </div>
+    </div>
+
+    <div class="board">
+        <ul id="first" class="left"></ul>
+        <ul id="second" class="right"></ul>
+        <ul id="third" class="left"></ul>
+        <ul id="fourth" class="right"></ul>
+    </div>
+
+    <script src="index.js"></script>
+    <script src="node_modules/jquery/dist/jquery.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+</body>
+</html>
