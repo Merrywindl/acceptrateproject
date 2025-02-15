@@ -1,44 +1,53 @@
 // Get elements
 const acceptButton = document.getElementById('Accept');
 const declineButton = document.getElementById('Decline');
-const firstArrayElement = document.getElementById('first');   // Display for array1
-const secondArrayElement = document.getElementById('second'); // Display for array2
-const thirdArrayElement = document.getElementById('third');   // Display for array3
-const fourthArrayElement = document.getElementById('fourth'); // Display for array4
+const firstArrayElement = document.getElementById('first');  
+const secondArrayElement = document.getElementById('second');
+const thirdArrayElement = document.getElementById('third');  
+const fourthArrayElement = document.getElementById('fourth'); 
 const acceptRate = document.getElementById('accept-rate');
+let totalZeroes = 0;
+let totalOnes = 0;
+let totalItems = 0;
 
 // Initialize arrays
-let array1 = [];  // For even array operations
-let array2 = [];  // For odd array operations (push)
-let array3 = [];  // For odd array operations (push)
-let array4 = [];  // The final array to hold items
-let totalOnes = 0;
+let array1 = [];  
+let array2 = [];  
+let array3 = [];  
+let array4 = []; 
 
 // Function to update the rate display
-function rate () {
-    console.log(`Total Ones: ${totalOnes}`);
-    acceptRate.innerText = `${totalOnes}%`;
+function rate() {
+    totalZeroes = countTotalZeroes();
+    totalOnes = countTotalOnes();
+    totalItems = totalOnes + totalZeroes;
+    const currentRate = totalItems > 0 ? (totalOnes / totalItems * 100).toFixed(2) : 0;
+
+    acceptRate.innerText = `${currentRate}%`;
 }
 
-// Function to count the total number of 1's in all arrays
-function countTotalOnes() {
-    console.log('Counting total ones...');
+function countTotalZeroes() {
+    totalZeroes = 0;
     const allArrays = [array1, array2, array3, array4];
+    for (const array of allArrays) {
+        const count = array.filter(item => item === 0).length;
+        totalZeroes += count;
+    }
+    return totalZeroes; // Return the total count of zeroes
+}
 
-    // Reset totalOnes before counting
+function countTotalOnes() {
     totalOnes = 0;
+    const allArrays = [array1, array2, array3, array4];
     for (const array of allArrays) {
         const count = array.filter(item => item === 1).length;
         totalOnes += count;
-        console.log(`Counted ${count} ones in array: ${JSON.stringify(array)}`);
     }
-
-    return totalOnes; // Return the total count of 1's
+    return totalOnes; // Return the total count of ones
 }
 
 // Function to update display for visual representation
 function updateDisplay() {
-    console.log('Updating display...');
     const convertToCircles = (array) => {
         return array.map(item => {
             if (item === 1) {
@@ -59,17 +68,28 @@ function updateDisplay() {
     rate();
 }
 
-// Function to transfer items ensuring arrays maintain a limit of 25
-function transferFromSourceToTarget(source, target, usePush) {
-    console.log(`Transferring from ${source} to ${target}, usePush: ${usePush}`);
-    while (source.length > 25) {
-        const item = source.pop();  // Remove the last item from the source
-        if (usePush) {
-            target.push(item);        // Add to the end of the target if it's an odd array
-        } else {
-            target.unshift(item);     // Add to the start of the target if it's an even array
+function finalArrayCount() {
+    let array4Size = array4.length;
+    // Trim array4 if it exceeds 25 items
+    if (array4Size > 25) {
+        while (array4Size > 25) {
+            array4.shift(); // Remove the first element
+            array4Size = array4.length;
         }
-        console.log(`Transferred item: ${item}, Source length: ${source.length}, Target: ${target}`);
+    }
+}
+
+// Function to transfer items ensuring arrays maintain a limit of 25
+function transferFromSourceToTarget(source, target, sourceName, targetName, useUnshift) {
+    if (source.length > 25) {
+        const item = sourceName === 'array2' ? source.shift() : source.pop(); // Pop the item once, or shift if source is array2
+        if (useUnshift) {
+            target.unshift(item); 
+            console.log(`Transferred item ${item} from ${sourceName} to ${targetName} using unshift`);
+        } else {
+            target.push(item);  
+            console.log(`Transferred item ${item} from ${sourceName} to ${targetName} using push`);
+        }
     }
 }
 
@@ -77,37 +97,19 @@ function transferFromSourceToTarget(source, target, usePush) {
 function transferItems() {
     console.log('Starting item transfers...');
     
-    // Check if array1 has more than 25 items
-    while (array1.length > 25) {
-        array2.unshift(array1.pop()); // Unshift the 26th item to array2
-        console.log(`Moved item from array1 to array2. Array1 length: ${array1.length}, Array2: ${array2}`);
-    }
-
-    // Manage transfers through other arrays
-    while (array2.length > 25) {
-        array3.unshift(array2.pop()); // Unshift the 26th item to array3
-        console.log(`Moved item from array2 to array3. Array2 length: ${array2.length}, Array3: ${array3}`);
-    }
-    
-    while (array3.length > 25) {
-        array4.push(array3.pop()); // Unshift the 26th item to array4
-        console.log(`Moved item from array3 to array4. Array3 length: ${array3.length}, Array4: ${array4}`);
-    }
-
-    // Ensure array4 does not exceed 25 items
-    if (array4.length > 25) {
-        while (array4.length >= 25) {
-            array4.shift(); // Remove the first element
-        }
-        console.log(`Trimmed array4 to 25 items. Array4: ${array4}`);
-    }
-
     // Maintain limits for each transfer
-    transferFromSourceToTarget(array3, array4, true);  // Transfer from array3 to array4
-    transferFromSourceToTarget(array1, array2, false); // Transfer from array1 to array2
-    transferFromSourceToTarget(array2, array3, true);  // Transfer from array2 to array3
-    
-    countTotalOnes(); // Count total ones for rate update
+    transferFromSourceToTarget(array1, array2, 'array1', 'array2', false);  
+    transferFromSourceToTarget(array2, array3, 'array2', 'array3', true);  
+    transferFromSourceToTarget(array3, array4, 'array3', 'array4', false);  
+
+    finalArrayCount();
+    updateDisplay();    // Update display
+    rate(); // update rate
+    console.log(`Array1: ${JSON.stringify(array1)}`);
+    console.log(`Array2: ${JSON.stringify(array2)}`);
+    console.log(`Array3: ${JSON.stringify(array3)}`);
+    console.log(`Array4: ${JSON.stringify(array4)}`);
+    console.log(`${array4.length} items`);
 }
 
 // Event handlers for accept and decline buttons
